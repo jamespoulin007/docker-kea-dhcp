@@ -16,6 +16,7 @@ RUN apt-get update \
 						ca-certificates \
 						liblog4cplus-dev \
 						postgresql-server-dev-all \
+						postgresql-client-9.5 \
 						libpq-dev \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
