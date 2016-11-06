@@ -34,5 +34,7 @@ RUN cd /root \
 
 EXPOSE 67/udp
 
+VOLUME /usr/local/etc/kea/
+
 ENTRYPOINT ["kea-dhcp4"]
 CMD ["-c", "/usr/local/etc/kea/kea.conf"]
