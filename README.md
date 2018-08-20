@@ -1,5 +1,3 @@
-![alt text](http://www.ungleich.ch/img/logo_200x200.svg "ungleich")
-
 Container with Kea version 1.1.0 compiled from source and with support for PostgreSQL. By default, it listens DHCPv4 only.
 
 # What is it?
@@ -19,4 +17,4 @@ This will create the container with its name as "kea", map the UDP 67 host's por
 
 # How can my Kea container connect to a Postgres container?
 
-Please refer to [ungleich/ungleich-postgres-kea](https://hub.docker.com/r/ungleich/ungleich-postgres-kea/) for instructions about how use a Postgres container adapted to this one and how to link it with your Kea instance.
+Use repo https://github.com/jamespoulin007/docker-kea-postgres-db as the postgres DB backend for the DHCP server
