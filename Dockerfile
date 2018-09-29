@@ -1,9 +1,14 @@
-FROM ubuntu:xenial
+FROM ubuntu:18.04
 
-MAINTAINER Carlos Ortigoza "carlos.ortigoza@ungleich.ch"
+LABEL Author = "https://github.com/jamespoulin007"
 
-RUN apt-get update \
-	&& apt-get install --no-install-recommends -y \
+ENV \
+    TINI_VERSION=v0.18.0\
+	DEBIAN_FRONTEND=noninteractive
+
+RUN set -e \
+	&& apt-get update \
+	&& apt-get install -yq \
 						git \
 						g++ \
 						automake \
@@ -16,25 +21,30 @@ RUN apt-get update \
 						ca-certificates \
 						liblog4cplus-dev \
 						postgresql-server-dev-all \
-						postgresql-client-9.5 \
+						postgresql-client \
 						libpq-dev \
+						less \ 
+						nano \
+						rsyslog \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
+
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 
 RUN cd /root \
 	&& git clone https://github.com/isc-projects/kea.git \
 	&& cd kea \
-	&& git checkout v1_1_0 \
-	&& autoreconf --install \
-	&& ./configure --with-dhcp-pgsql \
+	&& autoreconf -i \
+	&& ./configure --with-pgsql \
     && make \
     && make install \
     && ldconfig \
-    && rm -rf /root/kea
+	&& chmod +x /tini
 
-EXPOSE 67/udp
+COPY rsyslog.conf /etc/rsyslog.conf
 
-VOLUME /usr/local/etc/kea/
+COPY kea.conf /kea-config/kea.conf
 
-ENTRYPOINT ["kea-dhcp4"]
-CMD ["-c", "/usr/local/etc/kea/kea.conf"]
+ENTRYPOINT ["/tini", "--"]
+
+CMD ["kea-dhcp4", "-c", "/kea-config/kea.conf"]
